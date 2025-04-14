@@ -3,34 +3,92 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { CoinContext } from '../../context/CoinContext'
 import { Link } from 'react-router-dom'
+import { ChevronDown } from 'lucide-react'
 
 const Home = () => {
-    const { allCoin, currency, displayCoin, setDisplayCoin } = useContext(CoinContext);
-    const [input, setInput] = useState('');
+    const { allCoin, currency, setCurrency, displayCoin, setDisplayCoin } = useContext(CoinContext)
+        const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false)
 
-    // Keep existing handler functions
+    // Currency Handler
+    const currencyHandler = (selectedCurrency) => {
+        switch(selectedCurrency) {
+            case "usd": 
+                setCurrency({ name: "usd", symbol: "$" })
+                break
+            case "eur":
+                setCurrency({ name: "eur", symbol: "€" })
+                break
+            case "inr":
+                setCurrency({ name: "inr", symbol: "₹" })
+                break
+            default:
+                setCurrency({ name: "usd", symbol: "$" })
+        }
+        setShowCurrencyDropdown(false)
+    }
+
+     useEffect(() => {
+        setDisplayCoin(allCoin)
+    }, [allCoin])
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900/95 to-gray-900/90 text-white px-[5%] md:px-[8%] lg:px-[10%] py-10">
-            {/* Animated Hero Section */}
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900/95 to-gray-900/90 text-white px-[5%] md:px-[8%] lg:px-[10%] py-10 relative">
+            {/* Currency Selector */}
+            <div className="flex justify-end mb-8 relative z-20">
+                <div 
+                    className="flex items-center gap-2 bg-gray-800/40 backdrop-blur-lg px-4 py-2 rounded-xl border border-emerald-500/20 cursor-pointer hover:bg-gray-700/40 transition-all duration-300 group"
+                    onClick={() => setShowCurrencyDropdown(!showCurrencyDropdown)}
+                >
+                    <span className="text-emerald-400/90">{currency.symbol}</span>
+                    <ChevronDown className={`w-4 h-4 text-cyan-400/80 transition-transform ${showCurrencyDropdown ? 'rotate-180' : ''}`} />
+                </div>
+
+                {/* Currency Dropdown */}
+                {showCurrencyDropdown && (
+                    <div className="absolute top-12 right-0 bg-gray-800/95 backdrop-blur-xl rounded-lg border border-emerald-500/20 shadow-2xl z-50 min-w-[120px]">
+                        <div 
+                            className="px-4 py-3 hover:bg-emerald-600/30 transition-colors cursor-pointer flex items-center gap-2"
+                            onClick={() => currencyHandler('usd')}
+                        >
+                            <span className="text-emerald-400/80">$</span>
+                            <span className="text-gray-100">USD</span>
+                        </div>
+                        <div 
+                            className="px-4 py-3 hover:bg-emerald-600/30 transition-colors cursor-pointer flex items-center gap-2"
+                            onClick={() => currencyHandler('eur')}
+                        >
+                            <span className="text-emerald-400/80">€</span>
+                            <span className="text-gray-100">EUR</span>
+                        </div>
+                        <div 
+                            className="px-4 py-3 hover:bg-emerald-600/30 transition-colors cursor-pointer flex items-center gap-2"
+                            onClick={() => currencyHandler('inr')}
+                        >
+                            <span className="text-emerald-400/80">₹</span>
+                            <span className="text-gray-100">INR</span>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* Hero Section */}
             <div className="text-center mb-12 space-y-6 relative group">
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 blur-3xl opacity-30 animate-pulse-slow" />
                 <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-emerald-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent animate-gradient-x leading-tight">
-                    Crypto <br />
+                     Crypto <br />
                     <span className="text-3xl md:text-4xl bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">
                         Market Intelligence
                     </span>
                 </h1>
                 <p className="text-gray-300/80 max-w-2xl mx-auto text-lg md:text-xl leading-relaxed">
-                    Track real-time cryptocurrency metrics with advanced analytics and 
-                    <br/>
+                    Track real-time cryptocurrency metrics with advanced analytics and <br/>
                     <span className="bg-gradient-to-r from-emerald-400/80 to-cyan-400/80 bg-clip-text text-transparent mx-2">
                         neural network predictions
                     </span>
                 </p>
             </div>
 
-            {/* Holographic Table Header */}
+            {/* Table Header */}
             <div className="grid grid-cols-5 gap-4 text-sm py-4 px-4 mb-2 bg-gray-800/40 backdrop-blur-lg rounded-xl border border-emerald-500/20 shadow-[0_0_30px_-15px_rgba(34,197,94,0.1)]">
                 <p className="text-emerald-400/90">Rank</p>
                 <p className="text-cyan-400/90">Asset</p>
@@ -39,7 +97,7 @@ const Home = () => {
                 <p className="text-right">Market Cap</p>
             </div>
 
-            {/* Cybernetic Coins List */}
+            {/* Coins List */}
             <div className="space-y-2">
                 {displayCoin.slice(0, 10).map((item, index) => (
                     <Link
@@ -94,7 +152,7 @@ const Home = () => {
                 ))}
             </div>
 
-            {/* Grid Scan Effect */}
+            {/* Grid Overlay */}
             <div className="fixed inset-0 pointer-events-none z-0">
                 <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFhMWExYSIgc3Ryb2tlLXdpZHRoPSIxIiBvcGFjaXR5PSIwLjEiLz48L3N2Zz4=')]" />
             </div>

@@ -10,9 +10,27 @@ a{
   text-decoration: none;
   color: inherit;
 }
+/* Custom chart tooltip */
+.chart-tooltip {
+  @apply bg-gray-800/90 backdrop-blur-sm p-2 rounded-lg border border-emerald-500/20 text-sm;
+}
 
+/* Chart axis styles */
+.chart-axis text {
+  @apply fill-gray-400;
+}
+
+.chart-axis line {
+  @apply stroke-gray-700;
+}
 .app {
   min-height: 100vh;
   color: white;
-  background: linear-gradient(#0b004e, #1d152f, #002834);
+  background: linear-gradient(
+    to bottom right,
+    #111827,                      /* from-gray-900 */
+    rgba(17, 24, 39, 0.95),       /* via-gray-900/95 */
+    rgba(17, 24, 39, 0.9)         /* to-gray-900/90 */
+  );
+  
 }
